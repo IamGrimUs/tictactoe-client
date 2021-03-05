@@ -6,3 +6,8 @@
   flex-wrap: wrap;
   flex-direction: column;
 }
+.winner {
+  font-size: 2.25rem;
+  margin-bottom: 2rem;
+  color: #00ffff;
+}

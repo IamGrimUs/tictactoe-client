@@ -1,7 +1,7 @@
 import * as React from 'react'
 import './gameboard.styles.css'
 
-export const GameBoard = ({ active, game, handleClick }) => {
+export const GameBoard = ({ active, game, handleClick, winner }) => {
   const { gameBoard, playerOne, playerTwo } = game
 
   const pickCharToShow = selection => {
@@ -31,6 +31,7 @@ export const GameBoard = ({ active, game, handleClick }) => {
 
   return (
     <div className="gameBoardContainer">
+      {winner ? <div className="boardCover winner"></div> : null}
       {active ? null : <div className="boardCover">Waiting for other player...</div>}
       <div className="gameBoard">{renderBoard()}</div>
     </div>

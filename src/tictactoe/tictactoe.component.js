@@ -15,11 +15,22 @@ export const TicTacToe = () => {
   const [showGameBoard, setShowGameBoard] = useState(false)
   const [boardActive, setBoardActive] = useState(false)
   const [whoAmI, setWhoAmI] = useState('')
+  const [winner, setWinner] = useState('')
   const [hasInterval, setHasInterval] = useState(false)
+
   const { activeGame, setActiveGame } = useActiveGame()
   const { gameBoard } = activeGame
 
   useEffect(() => {
+    console.log(activeGame)
+    if (activeGame.winner) {
+      clearInterval(hasInterval)
+      setHasInterval(undefined)
+      setBoardActive(true)
+      setWinner(activeGame.winner)
+      console.log(winner)
+      return
+    }
     let count = 0
 
     const queryApi = () => {
@@ -29,7 +40,6 @@ export const TicTacToe = () => {
       const interval = setInterval(async () => {
         const res = await axios.get(`${BASE_URL}/${activeGame._id}`)
         setActiveGame({ ...res.data.data })
-        console.log('interval ', res.data.data)
       }, 1000)
       setHasInterval(interval)
     }
@@ -47,14 +57,13 @@ export const TicTacToe = () => {
       if (shouldPoll) {
         setBoardActive(false)
         queryApi()
-        // setHasInterval(true)
       } else {
         clearInterval(hasInterval)
         setHasInterval(undefined)
         setBoardActive(true)
       }
     }
-  }, [activeGame, gameBoard, hasInterval, whoAmI, setActiveGame])
+  }, [activeGame, gameBoard, hasInterval, whoAmI, setActiveGame, winner])
 
   const makeSelection = async (row, column) => {
     const { _id, playerOne, playerTwo } = activeGame
@@ -111,6 +120,16 @@ export const TicTacToe = () => {
     }
   }
 
+  const renderWinner = () => {
+    const verifyWinner = (winner === activeGame.playerOne && whoAmI === 'p1') || (winner === activeGame.playerTwo && whoAmI === 'p2')
+
+    if (winner && verifyWinner) {
+      return <div className="winner">Congratulations! You're a Winner.</div>
+    } else {
+      return <div className="winner">Well that stinks! You're the loser.</div>
+    }
+  }
+
   const handleStartGame = async () => {
     try {
       const res = await axios.post(`${BASE_URL}`)
@@ -128,7 +147,12 @@ export const TicTacToe = () => {
   return (
     <div className="main">
       <Title text="Tic to the Tac &amp; Toe" />
-      {showGameBoard ? <GameBoard active={boardActive} game={activeGame} handleClick={makeSelection} /> : <Button text="Start Multiplayer Game" btnStyle="primary" handleClick={handleStartGame} />}
+      {winner ? renderWinner() : null}
+      {showGameBoard ? (
+        <GameBoard active={boardActive} game={activeGame} winner={winner} handleClick={makeSelection} />
+      ) : (
+        <Button text="Start Multiplayer Game" btnStyle="primary" handleClick={handleStartGame} />
+      )}
     </div>
   )
 }
