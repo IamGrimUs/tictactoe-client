@@ -1,0 +1,4 @@
+.h1 {
+  font-size: calc(1rem + 3vmin);
+  width: 100%;
+}

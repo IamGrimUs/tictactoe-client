@@ -1,0 +1,32 @@
+.gameBoardContainer {
+  position: relative;
+}
+.gameBoard,
+.boardCover {
+  height: 18.75rem;
+  width: 18.75rem;
+}
+.boardCover {
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+}
+.gameBoard {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.gameBoard > div {
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 1.5rem;
+  width: 6.25rem;
+  height: 6.25rem;
+  border: 1px solid #282c34;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

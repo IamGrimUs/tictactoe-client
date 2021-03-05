@@ -1,25 +1,17 @@
-import logo from './logo.svg';
-import './App.css';
+import { GameContextProvider } from './_shared/context/useActiveGame'
+import { TicTacToe } from './tictactoe/tictactoe.component'
+import { Footer } from './_shared/footer.component'
+import './App.css'
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <GameContextProvider>
+        <TicTacToe />
+      </GameContextProvider>
+      <Footer text="&copy;2021 SuckaFish Inc" />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
