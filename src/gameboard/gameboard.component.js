@@ -7,10 +7,9 @@ export const GameBoard = ({ active, game, handleClick, winner }) => {
   const pickCharToShow = selection => {
     if (selection === playerOne) {
       return 'X'
-    } else if (selection === playerTwo) {
+    }
+    if (selection === playerTwo) {
       return 'O'
-    } else {
-      return null
     }
   }
 

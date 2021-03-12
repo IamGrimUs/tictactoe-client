@@ -4,6 +4,7 @@ import axios from 'axios'
 import { useActiveGame } from '../_shared/context/useActiveGame'
 import { Button } from '../_shared/button.component'
 import { Title } from '../_shared/title.component'
+import { Loader } from '../_shared/loader.component'
 import { GameBoard } from '../gameboard/gameboard.component'
 import { BASE_URL } from '../constant'
 
@@ -13,6 +14,8 @@ const { useState, useEffect } = React
 
 export const TicTacToe = () => {
   const [showGameBoard, setShowGameBoard] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [buttonMessage, setButtonMessage] = useState('Start Multiplayer Game')
   const [boardActive, setBoardActive] = useState(false)
   const [whoAmI, setWhoAmI] = useState('')
   const [winner, setWinner] = useState('')
@@ -27,7 +30,7 @@ export const TicTacToe = () => {
       setHasInterval(undefined)
       setBoardActive(true)
       setWinner(activeGame.winner)
-      console.log(winner)
+      setLoading(false)
       return
     }
     let count = 0
@@ -53,10 +56,12 @@ export const TicTacToe = () => {
       }
       const shouldPoll = (count % 2 === 1 && whoAmI === 'p2') || (count % 2 === 0 && whoAmI === 'p1')
       if (shouldPoll) {
+        setLoading(true)
         setBoardActive(false)
         queryApi()
       } else {
         clearInterval(hasInterval)
+        setLoading(false)
         setHasInterval(undefined)
         setBoardActive(true)
       }
@@ -100,6 +105,7 @@ export const TicTacToe = () => {
     if (playerTwo) {
       setWhoAmI('p2')
       setBoardActive(true)
+      setLoading(false)
     } else {
       setWhoAmI('p1')
       setBoardActive(false)
@@ -108,7 +114,6 @@ export const TicTacToe = () => {
 
   const renderWinner = () => {
     const verifyWinner = (winner === activeGame.playerOne && whoAmI === 'p1') || (winner === activeGame.playerTwo && whoAmI === 'p2')
-
     if (winner && verifyWinner) {
       return <div className="winner">Congratulations! You're a Winner.</div>
     } else {
@@ -117,6 +122,8 @@ export const TicTacToe = () => {
   }
 
   const handleStartGame = async () => {
+    setLoading(true)
+    setButtonMessage('Loading Game Board...')
     try {
       const res = await axios.post(`${BASE_URL}`)
       if (res.data.data) {
@@ -137,8 +144,9 @@ export const TicTacToe = () => {
       {showGameBoard ? (
         <GameBoard active={boardActive} game={activeGame} winner={winner} handleClick={makeSelection} />
       ) : (
-        <Button text="Start Multiplayer Game" btnStyle="primary" handleClick={handleStartGame} />
+        <Button text={buttonMessage} btnStyle="primary" handleClick={handleStartGame} />
       )}
+      <Loader display={loading ? 'show' : 'hide'} />
     </div>
   )
 }

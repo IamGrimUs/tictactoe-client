@@ -11,3 +11,9 @@
   margin-bottom: 2rem;
   color: #00ffff;
 }
+.show {
+  opacity: 1;
+}
+.hide {
+  opacity: 0;
+}
