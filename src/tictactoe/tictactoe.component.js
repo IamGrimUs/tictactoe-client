@@ -22,7 +22,6 @@ export const TicTacToe = () => {
   const { gameBoard } = activeGame
 
   useEffect(() => {
-    console.log(activeGame)
     if (activeGame.winner) {
       clearInterval(hasInterval)
       setHasInterval(undefined)
@@ -52,7 +51,6 @@ export const TicTacToe = () => {
           }
         }
       }
-      console.log(count)
       const shouldPoll = (count % 2 === 1 && whoAmI === 'p2') || (count % 2 === 0 && whoAmI === 'p1')
       if (shouldPoll) {
         setBoardActive(false)
@@ -65,48 +63,36 @@ export const TicTacToe = () => {
     }
   }, [activeGame, gameBoard, hasInterval, whoAmI, setActiveGame, winner])
 
+  const sendSelectionToAPI = async (id, player, row, column) => {
+    try {
+      const res = await axios({
+        method: 'put',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        url: `${BASE_URL}/${id}`,
+        data: {
+          playerId: player,
+          row,
+          column
+        }
+      })
+      setActiveGame({ ...res.data.data })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const makeSelection = async (row, column) => {
     const { _id, playerOne, playerTwo } = activeGame
     if (gameBoard[row][column]) {
       return
     }
     if (whoAmI === 'p1') {
-      try {
-        const res = await axios({
-          method: 'put',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          url: `${BASE_URL}/${_id}`,
-          data: {
-            playerId: playerOne,
-            row,
-            column
-          }
-        })
-        setActiveGame({ ...res.data.data })
-      } catch (error) {
-        console.log(error)
-      }
+      sendSelectionToAPI(_id, playerOne, row, column)
     }
     if (whoAmI === 'p2') {
-      try {
-        const res = await axios({
-          method: 'put',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          url: `${BASE_URL}/${_id}`,
-          data: {
-            playerId: playerTwo,
-            row,
-            column
-          }
-        })
-        setActiveGame({ ...res.data.data })
-      } catch (error) {
-        console.log(error)
-      }
+      sendSelectionToAPI(_id, playerTwo, row, column)
     }
   }
 
